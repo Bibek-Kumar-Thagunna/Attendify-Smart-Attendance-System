@@ -9,7 +9,7 @@ Attendify is a secure and modern attendance solution built using **Flutter** tha
 - **📍 Location-Bound QR Attendance**
   - Teachers generate a QR code with a **custom radius limit**
   - Students can scan and mark attendance **only within the defined area**
-  - Attempts from outside range are **blocked** and **instantly notified** to the teacher
+  - Attempts from outside range are **Not Marked Attendance** and **instantly notified** to the teacher
 
 - **🔄 Dynamic QR Refresh**
   - QR code **changes every 5 seconds** to prevent screenshot sharing and proxy attempts
