@@ -1,0 +1,187 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function userExists() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'owner@attendify.com' ||
+        (userExists() && getUserData().get('isSuperAdmin', false) == true)
+      );
+    }
+
+    function isInstitutionAdmin(instCode) {
+      return isAuthenticated() && (
+        isSuperAdmin() ||
+        (userExists() && 
+         (getUserData().get('admin', false) == true || getUserData().get('role', '') == 'admin') &&
+         getUserData().get('institutionCode', '') == instCode)
+      );
+    }
+
+    function isTeacher() {
+      return isAuthenticated() && (
+        isSuperAdmin() ||
+        (userExists() && (
+          getUserData().get('role', '') == 'teacher' ||
+          getUserData().get('teacher', false) == true
+        ))
+      );
+    }
+
+    // ===============================================================
+    // Institutions
+    // ===============================================================
+    match /institutions/{institutionId} {
+      // Public read required for institution selection and domain verification during onboarding
+      allow read: if true;
+      // Only Super Admin can create, modify, or delete institutions
+      allow write: if isSuperAdmin();
+    }
+
+    // ===============================================================
+    // Users Collection
+    // ===============================================================
+    match /users/{userId} {
+      // Allow reading user profiles if authenticated or looking up login accounts
+      allow read: if true;
+      
+      // Creating user document on signup
+      allow create: if isAuthenticated() && (
+        request.auth.uid == userId || isSuperAdmin()
+      );
+
+      // Updating user document
+      allow update: if isAuthenticated() && (
+        request.auth.uid == userId ||
+        isSuperAdmin() ||
+        isInstitutionAdmin(resource.data.get('institutionCode', ''))
+      );
+
+      // Deleting user document
+      allow delete: if isSuperAdmin();
+    }
+
+    // Index for ensuring unique Roll/ID numbers atomically
+    match /id_index/{indexId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // ===============================================================
+    // Attendance Sessions & Records
+    // ===============================================================
+    match /sessions/{sessionId} {
+      allow read: if isAuthenticated();
+      
+      // Teachers and Admins can create sessions
+      allow create: if isAuthenticated() && (
+        isTeacher() ||
+        isSuperAdmin() ||
+        request.resource.data.get('teacherUid', '') == request.auth.uid
+      );
+      
+      // Session owners and Admins can update/close sessions
+      allow update: if isAuthenticated() && (
+        resource.data.get('teacherUid', '') == request.auth.uid ||
+        isSuperAdmin() ||
+        isInstitutionAdmin(resource.data.get('institutionCode', ''))
+      );
+
+      allow delete: if isAuthenticated() && (
+        resource.data.get('teacherUid', '') == request.auth.uid ||
+        isSuperAdmin()
+      );
+
+      // Attendance Subcollection for Students
+      match /attendance/{studentUid} {
+        allow read: if isAuthenticated() && (
+          request.auth.uid == studentUid ||
+          get(/databases/$(database)/documents/sessions/$(sessionId)).data.get('teacherUid', '') == request.auth.uid ||
+          isSuperAdmin()
+        );
+
+        // Student marks own attendance or Teacher manually marks
+        allow create, update: if isAuthenticated() && (
+          request.auth.uid == studentUid ||
+          get(/databases/$(database)/documents/sessions/$(sessionId)).data.get('teacherUid', '') == request.auth.uid ||
+          isSuperAdmin()
+        );
+
+        allow delete: if isAuthenticated() && (
+          get(/databases/$(database)/documents/sessions/$(sessionId)).data.get('teacherUid', '') == request.auth.uid ||
+          isSuperAdmin()
+        );
+      }
+    }
+
+    // Collection group query for attendance analytics & history
+    match /{path=**}/attendance/{attendanceDoc} {
+      allow read: if isAuthenticated();
+    }
+
+    // ===============================================================
+    // Academic Resources (Class Groups, Subjects, Schedules)
+    // ===============================================================
+    match /class_groups/{groupId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    match /subjects/{subjectId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    match /scheduled_sessions/{scheduleId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // ===============================================================
+    // Notifications & Broadcasts
+    // ===============================================================
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // ===============================================================
+    // Audit Logs
+    // ===============================================================
+    match /audit_logs/{logId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isSuperAdmin();
+    }
+
+    // ===============================================================
+    // System Settings & Health
+    // ===============================================================
+    match /_system/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    match /system_settings/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isSuperAdmin();
+    }
+  }
+}

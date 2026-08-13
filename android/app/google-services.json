@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "582817926495",
+    "project_id": "attendiify",
+    "storage_bucket": "attendiify.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582817926495:android:c399ffdb18da1b2df2faea",
+        "android_client_info": {
+          "package_name": "com.example.attendify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "582817926495-05pkje57gk3lmd8aijl5p8c55sf3jd3c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOyCaoGXf1mdI5HK5o4_x8644sDbmwxpo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "582817926495-05pkje57gk3lmd8aijl5p8c55sf3jd3c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
