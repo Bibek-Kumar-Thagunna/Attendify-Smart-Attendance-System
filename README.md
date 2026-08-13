@@ -3,84 +3,78 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Backend-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
-[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web%20%7C%20iOS-brightgreen?style=for-the-badge)]()
+[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web%20%7C%20iOS%20%7C%20Desktop-brightgreen?style=for-the-badge)]()
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
-**Attendify** is an enterprise-ready, cross-platform smart attendance management system built with **Flutter** and **Firebase**. It eliminates proxy attendance and buddy-punching using **time-bound dynamic QR codes**, **real-time GPS geofencing**, **device locking (single-device verification)**, and **multi-tenant role-based access control (RBAC)**.
+**Attendify** is an enterprise-grade, cross-platform smart attendance management application built with **Flutter** and **Firebase**. It eliminates proxy attendance using **time-bound dynamic QR codes**, **real-time GPS geofencing**, **hardware single-device locking**, and **multi-tenant role-based access control (RBAC)**.
 
 ---
 
-## 🌟 Key Features
+## ⚡ Quick Start: How to Clone and Run Locally (TL;DR)
 
-### 📍 1. Location-Bound Dynamic QR Attendance
-- **Dynamic Rolling QR**: QR codes regenerate automatically every 5 seconds with cryptographically signed time-stamps to prevent photo sharing or screenshot distribution.
-- **Strict Geofencing**: Teachers define a physical radius (e.g., 50m). Students can only mark attendance if their verified GPS coordinates fall inside the designated zone.
-- **Live Proxy Detection**: Unauthorized attempts outside the geofence or with expired QR tokens are blocked instantly and flagged to the instructor.
+Want to get up and running immediately? Run these 4 commands in your terminal:
 
-### 🔒 2. Hardware Device Locking & Security
-- **Single-Device Binding**: A student account binds to their unique physical device identifier (`device_info_plus` / secure storage).
-- **Anti-Proxy Protection**: Multiple logins across different devices are prevented in real time.
+```bash
+# 1. Clone the repository
+git clone https://github.com/Bibek-Kumar-Thagunna/Attendify-Smart-Attendance-System.git
 
-### 🏢 3. Multi-Tenant Architecture & Roles
-- **👑 Super Admin**: Platform-wide oversight, institution provisioning, global metrics, and system audits.
-- **🏫 Institution Admin**: Institution department management, user approvals, course scheduling, and analytical reports.
-- **👨‍🏫 Teacher / Instructor**: Dynamic QR session generation, geofence radius adjustment, live attendee stream, manual override, and CSV/PDF export.
-- **🎓 Student**: Instant camera QR scanning with live GPS proximity indicator, personal attendance history, and subject breakdown.
+# 2. Enter the project directory
+cd Attendify-Smart-Attendance-System
 
----
+# 3. Get all Flutter dependencies
+flutter pub get
 
-## 🏗️ Architecture & Project Structure
-
-```
-Attendify/
-├── android/                   # Android native platform configuration & permissions
-├── ios/                       # iOS native platform configuration
-├── web/                       # Web entrypoint, manifest & service worker
-├── lib/
-│   ├── main.dart              # App initialization & Firebase bootstrap
-│   ├── app.dart               # MaterialApp, router config & theme provider
-│   ├── firebase_options.dart  # Firebase platform configuration
-│   ├── core/                  # Core utilities, theme tokens, router & constants
-│   │   ├── router.dart        # Declarative routing with go_router & role guards
-│   │   └── theme.dart         # Attendify design system & color palettes
-│   └── features/              # Feature-driven modular architecture
-│       ├── auth/              # Authentication & role management
-│       ├── super_admin/       # Super admin dashboards & institution provisioning
-│       ├── admin/             # Institution admin controls & batch analytics
-│       ├── teacher/           # Dynamic QR session generator & live attendees
-│       ├── student/           # QR scanner & personal attendance tracker
-│       ├── attendance/        # Attendance models, services & validations
-│       ├── institutions/      # Multi-tenant organization handling
-│       └── shared/            # Reusable UI widgets, stat cards & chart components
-├── firestore.rules            # Firestore security rules enforcing RBAC & multi-tenancy
-├── firestore.indexes.json     # Firestore composite query indexes
-├── firebase.json              # Firebase project configuration & hosting setup
-└── pubspec.yaml               # Dependencies & asset declarations
+# 4. Run on your browser (Chrome) or connected Android device
+flutter run -d chrome
 ```
 
 ---
 
-## 🚀 Getting Started: How to Run Locally
+## 📑 Table of Contents
+- [⚡ Quick Start](#-quick-start-how-to-clone-and-run-locally-tldr)
+- [📖 Detailed Local Setup Guide](#-detailed-local-setup-guide)
+  - [1. Prerequisites](#1-prerequisites)
+  - [2. Clone the Repository](#2-clone-the-repository)
+  - [3. Install Dependencies](#3-install-dependencies)
+  - [4. Firebase Setup & Configuration](#4-firebase-setup--configuration)
+  - [5. Running the Application](#5-running-the-application)
+  - [6. Building for Production](#6-building-for-production)
+- [🌟 Key Features & Architecture](#-key-features--architecture)
+- [👥 Role-Based Access Control (RBAC)](#-role-based-access-control-rbac)
+- [🏗️ Project Structure](#️-project-structure)
+- [🔑 Permissions](#-permissions)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [📄 License & Contributing](#-license--contributing)
 
-Follow these instructions to set up, configure, and run **Attendify** on your local machine.
+---
 
-### 📋 Prerequisites
+## 📖 Detailed Local Setup Guide
 
-Make sure you have the following installed on your development machine:
-1. **Flutter SDK** (version 3.3.0 or newer): [Install Flutter](https://docs.flutter.dev/get-started/install)
-2. **Dart SDK** (included with Flutter)
-3. **Android Studio** / **VS Code** with Flutter & Dart extensions
-4. **Google Chrome** (for testing web platform)
-5. **Firebase CLI** (optional, for deploying rules & cloud functions): `npm install -g firebase-tools`
+Follow this comprehensive guide to set up, configure, and run **Attendify** locally on your development environment.
 
-Verify your setup by running:
+### 1. Prerequisites
+
+Before running the project, make sure you have installed:
+
+| Tool | Recommended Version | Download / Guide |
+|---|---|---|
+| **Flutter SDK** | `3.3.0` or higher (channel stable) | [flutter.dev/get-started](https://docs.flutter.dev/get-started/install) |
+| **Dart SDK** | Included with Flutter | Built-in |
+| **Android Studio** (or VS Code) | Latest version | [developer.android.com/studio](https://developer.android.com/studio) |
+| **Google Chrome** | Latest (for Web testing) | [google.com/chrome](https://www.google.com/chrome/) |
+| **Firebase CLI** *(Optional)* | Latest | `npm install -g firebase-tools` |
+
+Verify that your Flutter environment is healthy:
 ```bash
 flutter doctor
 ```
+*(Ensure that Flutter, Android toolchain, and Chrome checks pass without critical issues).*
 
 ---
 
-### 📥 Step 1: Clone the Repository
+### 2. Clone the Repository
+
+Open your terminal or command prompt and clone the repository:
 
 ```bash
 git clone https://github.com/Bibek-Kumar-Thagunna/Attendify-Smart-Attendance-System.git
@@ -89,114 +83,199 @@ cd Attendify-Smart-Attendance-System
 
 ---
 
-### 📦 Step 2: Install Dependencies
+### 3. Install Dependencies
 
-Fetch all required Dart and Flutter packages:
+Download and link all Dart and Flutter packages declared in `pubspec.yaml`:
+
 ```bash
 flutter pub get
 ```
 
 ---
 
-### ⚙️ Step 3: Firebase Configuration
+### 4. Firebase Setup & Configuration
 
-Attendify uses Firebase for authentication and database services.
+Attendify uses Firebase for Authentication, Cloud Firestore, and Hosting.
 
-1. Create a Firebase project at the [Firebase Console](https://console.firebase.google.com/).
-2. Enable **Firebase Authentication** (Email/Password or Anonymous for demo).
-3. Enable **Cloud Firestore Database**.
-4. Configure FlutterFire using the FlutterFire CLI:
-   ```bash
-   flutterfire configure
-   ```
-5. *(Optional)* Deploy Firestore security rules and composite indexes:
-   ```bash
-   firebase login
-   firebase deploy --only firestore
-   ```
+The project comes with a pre-configured `firebase_options.dart` and Firebase configuration files (`firebase.json`, `firestore.rules`, `firestore.indexes.json`).
+
+> **💡 Note for Custom Firebase Projects:**
+> If you want to use your own Firebase backend project:
+> 1. Install FlutterFire CLI: `dart pub global activate flutterfire_cli`
+> 2. Log in to Firebase: `firebase login`
+> 3. Run configuration in root directory:
+>    ```bash
+>    flutterfire configure
+>    ```
+> 4. Deploy Firestore rules and indexes:
+>    ```bash
+>    firebase deploy --only firestore
+>    ```
 
 ---
 
-### 💻 Step 4: Run the Application Locally
+### 5. Running the Application
 
-#### 🌐 Running on Web (Chrome):
+You can run Attendify across multiple platforms:
+
+#### 🌐 Running on Web (Google Chrome)
 ```bash
+# Standard Chrome web runner
 flutter run -d chrome
-```
-*Tip: To test with CanvasKit rendering engine:*
-```bash
+
+# High-performance CanvasKit rendering engine (recommended for rich UI):
 flutter run -d chrome --web-renderer canvaskit
 ```
 
-#### 📱 Running on Android (Emulator or Connected Device):
-1. Connect your Android device via USB (with USB Debugging enabled) or start an Android Emulator from Android Studio.
-2. Check connected devices:
+#### 📱 Running on Android (Emulator or Physical Device)
+1. Ensure your physical phone is connected via USB with **USB Debugging enabled**, or launch an Android Virtual Device (AVD) from Android Studio.
+2. List available target devices:
    ```bash
    flutter devices
    ```
-3. Run the app:
+3. Run on your selected device:
    ```bash
-   flutter run -d <device_id>
+   flutter run -d <device-id>
    # Or simply:
    flutter run
    ```
 
+#### 🍏 Running on iOS (macOS only)
+```bash
+flutter run -d ios
+```
+
+#### 🖥️ Running on Desktop (Linux / macOS / Windows)
+```bash
+flutter run -d linux      # On Linux
+flutter run -d macos      # On macOS
+flutter run -d windows    # On Windows
+```
+
 ---
 
-### 📦 Step 5: Building for Production
+### 6. Building for Production
 
-#### Build Web Application:
+#### 🌐 Build Web App:
 ```bash
 flutter build web --release
 ```
-The compiled static website will be generated in `build/web/`.
+*Generated output will be available in `build/web/` for deployment (Firebase Hosting, Vercel, Netlify, or Nginx).*
 
-#### Build Android APK:
+#### 📱 Build Android APK:
 ```bash
 flutter build apk --release
 ```
-The installable APK will be output at `build/app/outputs/flutter-apk/app-release.apk`.
+*Generated APK will be located at `build/app/outputs/flutter-apk/app-release.apk`.*
 
-#### Build Android App Bundle (for Google Play):
+#### 📦 Build Android App Bundle (AAB for Google Play Store):
 ```bash
 flutter build appbundle --release
 ```
 
 ---
 
-## 🔑 Required Permissions
+## 🌟 Key Features & Architecture
 
-| Permission | Platform | Purpose |
+```mermaid
+graph TD
+    Teacher[👨‍🏫 Teacher App] -->|Generates Dynamic QR Code| Session[📡 Active Attendance Session]
+    Session -->|Refreshes Every 5s + GPS Geofence| QR[🔄 Rolling QR Token]
+    Student[🎓 Student App] -->|Scans QR via Camera| Validate{🛡️ Security Validation}
+    Validate -->|1. Token Valid?| CheckTime[⏰ Time Window Check]
+    Validate -->|2. Inside Radius?| CheckGPS[📍 GPS Geofence Check]
+    Validate -->|3. Registered Device?| CheckDevice[🔒 Hardware Device ID]
+    CheckTime & CheckGPS & CheckDevice -->|All Passed| MarkPresent[✅ Attendance Marked Present]
+    CheckTime & CheckGPS & CheckDevice -->|Failed Any Check| BlockProxy[❌ Proxy Blocked & Alerted]
+    MarkPresent --> Firestore[(🔥 Cloud Firestore)]
+    Firestore --> Dashboard[📊 Real-Time Analytics Dashboard]
+```
+
+### 📍 1. Dynamic Rolling QR Codes
+* Generates fresh QR payloads every 5 seconds with cryptographically signed timestamps.
+* Prevents screenshotting, photographing, or sharing QR codes across messaging apps.
+
+### 🛡️ 2. Hardware GPS Geofencing
+* Teachers specify an allowable attendance radius (e.g., 50 meters around the lecture hall).
+* Student coordinates are verified against the session anchor coordinates before marking presence.
+
+### 🔒 3. Single-Device Hardware Binding
+* Prevents "buddy punching" by associating a student's account with their device identifier.
+* Multiple concurrent student logins on the same device are immediately flagged.
+
+---
+
+## 👥 Role-Based Access Control (RBAC)
+
+The application provides dedicated dashboards and permissions for each role:
+
+| Role | Key Capabilities |
+|---|---|
+| **👑 Super Admin** | Global system health monitoring, multi-tenant institution provisioning, system settings, global notification broadcasts, and audit logs. |
+| **🏫 Institution Admin** | Department and course administration, faculty and student onboarding, schedule approvals, and batch analytics reports. |
+| **👨‍🏫 Teacher** | Start dynamic QR sessions with customizable geofence radiuses, live attendee streams, manual attendance overrides, and CSV/PDF report exports. |
+| **🎓 Student** | High-speed camera QR scanner with real-time GPS proximity feedback, attendance logs, monthly summaries, and subject-wise analytics. |
+
+---
+
+## 🏗️ Project Structure
+
+```
+Attendify/
+├── android/                   # Native Android configuration & permissions
+├── ios/                       # Native iOS configuration
+├── web/                       # Web entrypoint, manifest & PWA service worker
+├── lib/
+│   ├── main.dart              # Entrypoint & Firebase initialization
+│   ├── app.dart               # MaterialApp, theme configuration & router setup
+│   ├── firebase_options.dart  # Firebase platform credentials & configuration
+│   ├── core/                  # Design system, theme tokens, constants & router
+│   │   ├── router.dart        # go_router configuration with RBAC route guards
+│   │   └── theme.dart         # Attendify typography, color schemes & styles
+│   └── features/              # Modular feature-driven architecture
+│       ├── auth/              # Authentication flows & role switching
+│       ├── super_admin/       # Super Admin dashboard, institutions & audit logs
+│       ├── admin/             # Institution admin management & analytics
+│       ├── teacher/           # Dynamic QR session generator & attendee stream
+│       ├── student/           # Camera QR scanner & student attendance history
+│       ├── attendance/        # Domain models, services & distance calculations
+│       ├── institutions/      # Multi-tenant organization support
+│       └── shared/            # Reusable UI widgets, cards & chart components
+├── firestore.rules            # Firestore security rules with multi-tenant isolation
+├── firestore.indexes.json     # Firestore composite query index definitions
+├── firebase.json              # Firebase project settings & hosting config
+└── pubspec.yaml               # Flutter package dependencies & asset configurations
+```
+
+---
+
+## 🔑 Permissions
+
+| Permission | Platforms | Reason |
 |---|---|---|
-| `CAMERA` | Android / iOS / Web | Capturing and scanning dynamic QR codes in real time |
-| `ACCESS_FINE_LOCATION` | Android / iOS / Web | Accurate GPS coordinates for geofence distance verification |
+| `CAMERA` | Android / iOS / Web | Real-time QR code camera scanning |
+| `ACCESS_FINE_LOCATION` | Android / iOS / Web | Accurate GPS coordinates for geofence validation |
 | `ACCESS_COARSE_LOCATION` | Android / iOS / Web | Approximate location fallback |
-| `INTERNET` | Android / iOS / Web | Real-time synchronization with Firebase Cloud Firestore |
+| `INTERNET` | All platforms | Real-time synchronization with Firebase Cloud Firestore |
 
-> **Note for Web:** Browsers require HTTPS (or `localhost`) to access camera and geolocation APIs due to browser security policies.
-
----
-
-## 🛠️ Tech Stack & Key Libraries
-
-- **Framework**: [Flutter](https://flutter.dev) (Dart)
-- **State Management**: [Riverpod](https://riverpod.dev) (`flutter_riverpod`)
-- **Navigation**: [GoRouter](https://pub.dev/packages/go_router)
-- **Backend & Database**: [Firebase Auth](https://firebase.google.com/products/auth), [Cloud Firestore](https://firebase.google.com/products/firestore), [Firebase Hosting](https://firebase.google.com/products/hosting)
-- **QR Code Scanning & Generation**: [`mobile_scanner`](https://pub.dev/packages/mobile_scanner), [`qr_flutter`](https://pub.dev/packages/qr_flutter)
-- **Geolocation & Distance**: [`geolocator`](https://pub.dev/packages/geolocator)
-- **Data Visualization**: [`fl_chart`](https://pub.dev/packages/fl_chart)
-- **Device Security**: [`device_info_plus`](https://pub.dev/packages/device_info_plus), [`flutter_secure_storage`](https://pub.dev/packages/flutter_secure_storage)
+> **⚠️ Web Permission Note:** Modern web browsers require serving over **HTTPS** (or `localhost`) to access Camera and Geolocation APIs.
 
 ---
 
-## 📄 License
+## 🛠️ Tech Stack
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+* **UI Framework:** [Flutter 3.x](https://flutter.dev) & [Dart 3.x](https://dart.dev)
+* **State Management:** [Riverpod](https://riverpod.dev) (`flutter_riverpod`)
+* **Routing & Deep Linking:** [GoRouter](https://pub.dev/packages/go_router)
+* **Backend & Auth:** [Firebase Authentication](https://firebase.google.com/products/auth) & [Cloud Firestore](https://firebase.google.com/products/firestore)
+* **QR Scanning & Generation:** [`mobile_scanner`](https://pub.dev/packages/mobile_scanner) & [`qr_flutter`](https://pub.dev/packages/qr_flutter)
+* **Geolocation & Geofencing:** [`geolocator`](https://pub.dev/packages/geolocator)
+* **Analytics & Visualizations:** [`fl_chart`](https://pub.dev/packages/fl_chart)
+* **Device Security:** [`device_info_plus`](https://pub.dev/packages/device_info_plus) & [`flutter_secure_storage`](https://pub.dev/packages/flutter_secure_storage)
 
 ---
 
-## 🤝 Contributing
+## 📄 License & Contributing
 
-Contributions, issues, and feature requests are welcome!
-Feel free to check the [issues page](https://github.com/Bibek-Kumar-Thagunna/Attendify-Smart-Attendance-System/issues).
+* **License:** Distributed under the MIT License. See [LICENSE](LICENSE) for more details.
+* **Contributing:** Issues, ideas, and pull requests are welcomed! Visit the [Issues Tab](https://github.com/Bibek-Kumar-Thagunna/Attendify-Smart-Attendance-System/issues) to report bugs or request features.
